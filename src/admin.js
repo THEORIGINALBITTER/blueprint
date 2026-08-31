@@ -5,7 +5,94 @@ const notify=t=>{toast.textContent=t;toast.style.display='block';setTimeout(()=>
 const api=async(url,options={})=>{const r=await fetch(url,options),data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||'Anfrage fehlgeschlagen.');return data};
 document.querySelector('#login-form').addEventListener('submit',async e=>{e.preventDefault();try{const data=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.querySelector('#password').value})});csrf=data.csrf;openEditor()}catch(error){document.querySelector('#login-message').textContent=error.message}});
 async function openEditor(){try{content=await api('/api/editor-content');login.hidden=true;editor.hidden=false;const form=document.querySelector('#editor-form');form.innerHTML='';Object.entries(groups).forEach(([name,keys])=>{const section=document.createElement('section');section.innerHTML=`<h2>${name}</h2>`;keys.forEach(key=>{const row=document.createElement('div');row.className='field';const label=document.createElement('label');label.htmlFor=key;label.textContent=labels[key]||key;const input=document.createElement((content[key]||'').length>90?'textarea':'input');input.id=key;input.dataset.key=key;input.value=content[key]||'';row.append(label,input);section.append(row)});form.append(section)});await loadDocuments();await loadGit()}catch(error){notify(error.message)}}
-async function loadDocuments(){const section=document.createElement('section');section.id='documents';section.innerHTML='<h2>Markdown-Dokumente</h2><div class="field"><label for="document-select">Dokument</label><select id="document-select"></select></div><div class="field"><label for="document-content">Inhalt</label><textarea id="document-content" rows="24" spellcheck="false"></textarea></div><div style="display:flex;gap:12px;flex-wrap:wrap"><button class="publish" id="save-document" type="button">Markdown speichern</button><button type="button" id="new-document">+ Neues Dokument</button><button type="button" id="rename-document">Umbenennen</button><button type="button" id="delete-document">Löschen</button></div>';document.querySelector('#editor-form').after(section);await refreshDocuments()}
+async function loadDocuments() {
+  const existing = document.querySelector('#documents');
+  if (existing) existing.remove();
+
+  const section = document.createElement('section');
+  section.id = 'documents';
+
+  section.innerHTML = `
+    <h2>Markdown-Dokumente</h2>
+
+    <div class="field">
+      <label for="document-select">Dokument auswählen</label>
+      <select id="document-select">
+        <option value="">Dokument auswählen …</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="document-content">Inhalt</label>
+      <textarea
+        id="document-content"
+        rows="24"
+        spellcheck="false"
+        placeholder="Markdown-Inhalt …"
+      ></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="publish" id="save-document" type="button">
+        Markdown speichern
+      </button>
+      <button type="button" id="new-document">
+        + Neues Dokument
+      </button>
+      <button type="button" id="rename-document">
+        Umbenennen
+      </button>
+      <button type="button" id="delete-document">
+        Löschen
+      </button>
+    </div>
+  `;
+
+  const form = document.querySelector('#editor-form');
+  form.appendChild(section);
+
+  try {
+    const documents = await api('/api/docs');
+
+    const select = section.querySelector('#document-select');
+
+    for (const document of documents) {
+      const option = document.createElement('option');
+      option.value = document.path;
+      option.textContent = `${document.title} — ${document.path}`;
+      select.appendChild(option);
+    }
+
+    const loadDocument = async () => {
+      const path = select.value;
+      const textarea = section.querySelector('#document-content');
+
+      if (!path) {
+        textarea.value = '';
+        return;
+      }
+
+      try {
+        const data = await api(
+          `/api/docs/${encodeURIComponent(path)}`
+        );
+
+        textarea.value = data.content || '';
+      } catch (error) {
+        notify(error.message);
+      }
+    };
+
+    select.addEventListener('change', loadDocument);
+
+    if (documents.length > 0) {
+      select.value = documents[0].path;
+      await loadDocument();
+    }
+  } catch (error) {
+    notify(`Markdown-Dokumente konnten nicht geladen werden: ${error.message}`);
+  }
+}
 async function refreshDocuments(selected=''){const select=document.querySelector('#document-select');if(!select)return;const list=await api('/api/docs');select.innerHTML='';list.forEach(document=>{const option=document.createElement('option');option.value=document.path;option.textContent=`${document.title} — ${document.path}`;select.append(option)});if(selected)select.value=selected;const load=async()=>{if(!select.value)return;document.querySelector('#document-content').value=(await api(`/api/docs/${encodeURIComponent(select.value)}`)).content};select.onchange=load;if(select.value)await load()}
 async function loadGit(){const section=document.createElement('section');section.id='git-editor';section.innerHTML='<h2>Git</h2><p id="git-branch">Prüfe Repository …</p><pre id="git-diff" style="white-space:pre-wrap;overflow:auto;max-height:420px"></pre><div class="field"><label for="git-message">Commit-Nachricht</label><input id="git-message" value="Update Markdown content"></div><div style="display:flex;gap:12px;flex-wrap:wrap"><button type="button" class="publish" id="git-refresh">Status aktualisieren</button><button type="button" class="publish" id="git-commit">Commit</button><button type="button" class="publish" id="git-push">Commit + Push</button></div><p id="git-message-status" class="message"></p>';document.querySelector('#editor-form').after(section);await refreshGit()}
 async function refreshGit(){const branch=document.querySelector('#git-branch'),diff=document.querySelector('#git-diff');if(!branch)return;try{const data=await api('/api/git/status');branch.textContent=data.clean?`Branch: ${data.branch} — Arbeitsverzeichnis sauber.`:`Branch: ${data.branch} — Änderungen vorhanden.`;diff.textContent=data.diff||'Keine Änderungen unter docs/.'}catch(error){branch.textContent=error.message}}
