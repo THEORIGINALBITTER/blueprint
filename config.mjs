@@ -1,3 +1,9 @@
-// This file is only used locally by the Node development server.
-// Change this before sharing the editor with anyone.
-export const adminPassword = '27476Cux!';
+// Local-only configuration.
+// Set BLUEPRINT_ADMIN_PASSWORD in your shell or .env/local environment.
+const password = process.env.BLUEPRINT_ADMIN_PASSWORD;
+
+if (!password) {
+  throw new Error('BLUEPRINT_ADMIN_PASSWORD is not configured. Set it before starting the editor.');
+}
+
+export const adminPassword = password;
