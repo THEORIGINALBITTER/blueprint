@@ -1,0 +1,2 @@
+/* Compatibility shim for the /admin/ relative stylesheet URL. */
+@import url("../public.css");

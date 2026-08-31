@@ -1,0 +1,8 @@
+# ZenPost Blog — CORS für JSON und Markdown
+<IfModule mod_headers.c>
+  <FilesMatch "\.(json|md)$">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+  </FilesMatch>
+</IfModule>

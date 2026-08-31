@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10100f" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>The 0-to-1 Memo — Bureau J&D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./public.css" />
+  </head>
+  <body class="memo-page">
+    <div data-site-header data-page-title="The 0-to-1 Memo"></div>
+    <main class="memo-shell"><article id="memo" class="memo-content" aria-live="polite"></article></main>
+    <div data-site-footer></div>
+    <script src="./src/site-layout.js?v=2"></script>
+    <script src="./src/cases-data.js"></script>
+    <script src="./src/memo.js?v=4"></script>
+    <div id="orbit-root"></div>
+    <script>window.process = window.process || { env: { NODE_ENV: 'production' } };</script>
+    <script src="./orbit-dist/orbit-menu.js?v=3"></script>
+  </body>
+</html>

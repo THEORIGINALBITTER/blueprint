@@ -1,0 +1,29 @@
+{
+  "name": "zero-to-one-blueprint",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "predev": "npm run orbit:build",
+    "dev": "node dev.mjs",
+    "prestart": "npm run orbit:build",
+    "start": "node server.mjs",
+    "build": "npm run css:build && npm run orbit:build && node scripts/build-dist.mjs",
+    "orbit:build": "vite build --config vite.orbit.config.js",
+    "css:build": "npx @tailwindcss/cli -i ./src/tailwind.css -o ./public.css --minify",
+    "css:watch": "npx @tailwindcss/cli -i ./src/tailwind.css -o ./public.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "@denisbitter/bitter-button-menu": "^1.0.0",
+    "framer-motion": "^11.18.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.6"
+  }
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "architectural-interiors",
+    "number": "01",
+    "title": "Architectural Interiors",
+    "file": "01-architectural-interiors.md",
+    "sector": "Heritage Brand / Interior"
+  },
+  {
+    "id": "industrial-transformation",
+    "number": "02",
+    "title": "Industrial Transformation",
+    "file": "02-industrial-transformation.md",
+    "sector": "B2B Hidden Champion / Maschinenbau"
+  }
+]
