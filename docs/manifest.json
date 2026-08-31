@@ -5,5 +5,18 @@
     "author": "Denis Bitter",
     "url": "https://blueprint.denisbitter.de/"
   },
-  "posts": []
+  "content": {
+    "format": "markdown",
+    "directory": "docs"
+  },
+  "documents": [
+    { "id": "bedarf", "path": "00-bedarf.md", "title": "Bedarf" },
+    { "id": "modell", "path": "01-modell.md", "title": "Modell" },
+    { "id": "skalierung", "path": "02-skalierung.md", "title": "Skalierung" },
+    { "id": "nische", "path": "03-nische.md", "title": "Nische" },
+    { "id": "demo-szenario", "path": "04-demo-szenario.md", "title": "Demo-Szenario" },
+    { "id": "memo", "path": "memo.md", "title": "Memo" },
+    { "id": "case-architectural-interiors", "path": "cases/01-architectural-interiors.md", "title": "Case: Architectural Interiors" },
+    { "id": "case-industrial-transformation", "path": "cases/02-industrial-transformation.md", "title": "Case: Industrial Transformation" }
+  ]
 }
